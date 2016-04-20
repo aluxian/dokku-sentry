@@ -50,14 +50,19 @@ SENTRY_SINGLE_ORGANIZATION = True
 
 # Generic Redis configuration used as defaults for various things including:
 # Buffers, Quotas, TSDB
-SENTRY_REDIS_OPTIONS = {
-    'hosts': {
-        0: {
-            'host': redis_url_parts.netloc.split(':')[0],
-            'port': redis_url_parts.port,
-        }
-    }
-}
+
+SENTRY_OPTIONS.update({
+    'redis.clusters': {
+        'default': {
+            'hosts': {
+                0: {
+                    'host': redis_url_parts.netloc.split(':')[0],
+                    'port': redis_url_parts.port
+                },
+            },
+        },
+    },
+})
 
 #########
 # Cache #
