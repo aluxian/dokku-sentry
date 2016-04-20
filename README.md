@@ -22,8 +22,8 @@ Instructions:
 
 Go to your dokku server and install following plugins:
 
-
 1) Install official **postgresql** plugin
+
 ```
 sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 ```
@@ -31,7 +31,6 @@ sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 2) Install official **redis** plugin
 ```
 sudo dokku plugin:install https://github.com/dokku/dokku-redis.git redis
-
 ```
 
 ## Prepare dokku
