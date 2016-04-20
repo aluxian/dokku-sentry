@@ -1,6 +1,6 @@
 # dokku-sentry
 
-Deploy [Sentry](https://github.com/getsentry/sentry) 8.x on [dokku](http://dokku.viewdocs.io/dokku/) with [sentry-github](https://github.com/getsentry/sentry-github), [postgres](https://github.com/dokku/dokku-postgres) and [redis](https://github.com/dokku/dokku-redis).
+Deploy [Sentry](https://github.com/getsentry/sentry) 8.3.2 on [dokku](http://dokku.viewdocs.io/dokku/) with [sentry-github](https://github.com/getsentry/sentry-github), [postgres](https://github.com/dokku/dokku-postgres) and [redis](https://github.com/dokku/dokku-redis).
 
 This setup uses [uWSGI](https://uwsgi-docs.readthedocs.org/en/latest/) as master process for all the child processes needed to properly run Sentry:
 
@@ -39,24 +39,24 @@ sudo dokku plugin:install https://github.com/dokku/dokku-redis.git redis
 
 1) Create dokku app
 ```
-ssh dokku@yourserver apps:create sentry
+dokku apps:create sentry
 ```
 
 2) Create postgresql db and link it to the app
 ```
-ssh dokku@yourserver postgres:create sentry
-ssh dokku@yourserver postgres:link sentry sentry
+dokku postgres:create sentry
+dokku postgres:link sentry sentry
 ```
 
 3) Create redis instance and link it to the app
 ```
-ssh dokku@yourserver redis:create sentry
-ssh dokku@yourserver redis:link sentry sentry
+dokku redis:create sentry
+dokku redis:link sentry sentry
 ```
 
 4) Add SENTRY_CONF to env vars
 ```
-ssh dokku@yourserver config:set sentry SENTRY_CONF=./config
+dokku config:set sentry SENTRY_CONF=./config
 ```
 
 ## Clone and deploy
@@ -102,7 +102,6 @@ ssh -t dokku@yourserver run sentry "sentry createuser"
 You can customise `sentry.conf.py` to fit your needs. However you can also override any config variable using dokku env vars:
 
 ```
-
 SENTRY_EMAIL_HOST
 SENTRY_EMAIL_PASSWORD
 SENTRY_EMAIL_USER
@@ -114,13 +113,12 @@ SENTRY_ENABLE_EMAIL_REPLIES
 SENTRY_SMTP_HOSTNAME
 ```
 
-
 ## Notes
 
 To run sentry help and other commands:
 
 ```
-ssh dokku@yourserver run sentry "sentry help"
+dokku run sentry "sentry help"
 ```
 
 To enable console prompt use `-t`
@@ -132,5 +130,5 @@ ssh -t dokku@yourserver run sentry "sentry"
 If something goes wrong you can use dokku logs to debug:
 
 ```
-ssh dokku@yourserver logs sentry -t
+dokku logs sentry -t
 ```
