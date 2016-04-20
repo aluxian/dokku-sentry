@@ -1,3 +1,4 @@
 cffi==1.5.2
-sentry==8.3.2
 uWSGI>2.0.0,<2.1.0
+sentry==8.3.2
+sentry-github==0.1.2

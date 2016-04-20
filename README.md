@@ -1,6 +1,6 @@
 # dokku-sentry
 
-Deploy [Sentry](https://github.com/getsentry/sentry) 8.x on [dokku](http://dokku.viewdocs.io/dokku/) with official [postgres](https://github.com/dokku/dokku-postgres) and [redis](https://github.com/dokku/dokku-redis) plugins.
+Deploy [Sentry](https://github.com/getsentry/sentry) 8.x on [dokku](http://dokku.viewdocs.io/dokku/) with [sentry-github](https://github.com/getsentry/sentry-github), [postgres](https://github.com/dokku/dokku-postgres) and [redis](https://github.com/dokku/dokku-redis).
 
 This setup uses [uWSGI](https://uwsgi-docs.readthedocs.org/en/latest/) as master process for all the child processes needed to properly run Sentry:
 
