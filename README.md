@@ -56,14 +56,14 @@ ssh dokku@yourserver redis:link sentry sentry
 
 4) Add SENTRY_CONF to env vars
 ```
-ssh dokku@yourserver config:set sentry SENTRY_CONF=./
+ssh dokku@yourserver config:set sentry SENTRY_CONF=./config
 ```
 
 ## Clone and deploy
 
 1) Clone this repository locally
 ```
-git clone https://github.com/darklow/dokku-sentry.git
+git clone https://github.com/Aluxian/dokku-sentry.git
 cd dokku-sentry
 ```
 
@@ -81,7 +81,7 @@ git push dokku
 
 After you have sucessfully deployed app to dokku, run following commands to finish installing sentry:
 
-1) Create database schema. 
+1) Create database schema.
 
 After migrations you will be prompted to create initial user.
 
@@ -99,10 +99,19 @@ ssh -t dokku@yourserver run sentry "sentry createuser"
 
 ## Customize sentry config
 
-You can customise `sentry.conf.py` to fit your needs. However you can also override any config variable using dokku env vars. Use `SC_` prefix (as of Sentry Config) to override specific sentry config variables. For example:
+You can customise `sentry.conf.py` to fit your needs. However you can also override any config variable using dokku env vars:
 
 ```
-ssh dokku@yourserver config:set sentry SC_EMAIL_HOST=mail.yourserver.com SC_EMAIL_HOST_USER=sentry@yourserver.com SC_EMAIL_HOST_PASSWORD=XYZ123 SC_SERVER_EMAIL=sentry@yourserver.com SC_EMAIL_USE_TLS=True
+
+SENTRY_EMAIL_HOST
+SENTRY_EMAIL_PASSWORD
+SENTRY_EMAIL_USER
+SENTRY_EMAIL_PORT
+SENTRY_EMAIL_USE_TLS
+SENTRY_SERVER_EMAIL
+SENTRY_MAILGUN_API_KEY
+SENTRY_ENABLE_EMAIL_REPLIES
+SENTRY_SMTP_HOSTNAME
 ```
 
 

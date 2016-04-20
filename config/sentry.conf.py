@@ -1,8 +1,10 @@
-
 # This file is just Python, with a touch of Django which means
-# you can inherit and tweak settings to your hearts content.
-from sentry.conf.server import *
+# you can inherit and tweak settings to your heart's content.
 
+from sentry.conf.server import *  # NOQA
+from sentry.utils.types import Bool
+
+import os
 import os.path
 
 CONF_ROOT = os.path.dirname(__file__)
@@ -143,54 +145,51 @@ SENTRY_DIGESTS = 'sentry.digests.backends.redis.RedisBackend'
 # the django-storages package: https://django-storages.readthedocs.org/en/latest/
 
 SENTRY_FILESTORE = 'django.core.files.storage.FileSystemStorage'
-SENTRY_FILESTORE_OPTIONS = {
-    'location': '/tmp/sentry-files',
-}
+SENTRY_FILESTORE_OPTIONS = {'location': '/tmp/sentry-files'}
 
 ##############
 # Web Server #
 ##############
 
-# If you're using a reverse SSL proxy, you should enable the X-Forwarded-Proto
-# header and uncomment the following settings
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-
-# If you're not hosting at the root of your web server, and not using uWSGI,
-# you need to uncomment and set it to the path where Sentry is hosted.
-# FORCE_SCRIPT_NAME = '/sentry'
-
 SENTRY_WEB_HOST = '0.0.0.0'
 SENTRY_WEB_PORT = os.environ.get('PORT')
-SENTRY_WEB_OPTIONS = {
-    # 'workers': 3,  # the number of gunicorn workers
-    # 'secure_scheme_headers': {'X-FORWARDED-PROTO': 'https'},
-}
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 ###############
 # Mail Server #
 ###############
 
-# For more information check Django's documentation:
-# https://docs.djangoproject.com/en/1.6/topics/email/
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'localhost'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_HOST_USER = ''
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
+email = os.environ.get('SENTRY_EMAIL_HOST')
+if email:
+    SENTRY_OPTIONS['mail.backend'] = 'smtp'
+    SENTRY_OPTIONS['mail.host'] = email
+    SENTRY_OPTIONS['mail.password'] = os.environ.get('SENTRY_EMAIL_PASSWORD') or ''
+    SENTRY_OPTIONS['mail.username'] = os.environ.get('SENTRY_EMAIL_USER') or ''
+    SENTRY_OPTIONS['mail.port'] = int(os.environ.get('SENTRY_EMAIL_PORT') or 25)
+    SENTRY_OPTIONS['mail.use-tls'] = Bool(os.environ.get('SENTRY_EMAIL_USE_TLS', False))
+else:
+    SENTRY_OPTIONS['mail.backend'] = 'dummy'
+    SENTRY_OPTIONS['mail.host'] = 'localhost'
+    SENTRY_OPTIONS['mail.password'] = ''
+    SENTRY_OPTIONS['mail.username'] = ''
+    SENTRY_OPTIONS['mail.port'] = 25
+    SENTRY_OPTIONS['mail.use-tls'] = False
 
 # The email address to send on behalf of
-SERVER_EMAIL = 'root@localhost'
+SENTRY_OPTIONS['mail.from'] = os.environ.get('SENTRY_SERVER_EMAIL') or 'root@localhost'
 
 # If you're using mailgun for inbound mail, set your API key and configure a
 # route to forward to /api/hooks/mailgun/inbound/
-MAILGUN_API_KEY = ''
+MAILGUN_API_KEY = os.environ.get('SENTRY_MAILGUN_API_KEY') or ''
 
-# Expose any env that starts with SC_
-for env_key, env_val in os.environ.items():
-    if env_key.startswith('SC_'):
-        globals()[env_key[3:]] = env_val
+# If you specify a MAILGUN_API_KEY, you definitely want EMAIL_REPLIES
+if MAILGUN_API_KEY:
+    SENTRY_ENABLE_EMAIL_REPLIES = True
+else:
+    SENTRY_ENABLE_EMAIL_REPLIES = Bool(os.environ.get('SENTRY_ENABLE_EMAIL_REPLIES', False))
+
+if SENTRY_ENABLE_EMAIL_REPLIES:
+    SENTRY_SMTP_HOSTNAME = os.environ.get('SENTRY_SMTP_HOSTNAME') or 'localhost'
